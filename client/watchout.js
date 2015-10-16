@@ -21,6 +21,27 @@ MICROSTEPS
 6) Play game
 */
 
+
+//Declare range helper functions
+var range = function(start, stop, step) {
+  if (stop == null) {
+    stop = start || 0;
+    start = 0;
+  }
+
+  step = step || 1;
+  var length = Math.max(Math.ceil((stop - start) / step), 0);
+  var range = Array(length);
+  for (var idx = 0; idx < length; idx++, start += step) {
+    range[idx] = start;
+  }
+
+  return range;
+};
+
+
+
+
 //SETUP GAME BOARD
 
 //Set up the environment
@@ -40,7 +61,7 @@ var gameStats = {
 var axes = {
   x: d3.scale.linear().domain([0,100]).range([0,gameOptions.width]),
   y: d3.scale.linear().domain([0,100]).range([0,gameOptions.height])
-}
+};
 
 var gameBoard = d3.select(".container")
                 .append("svg:svg")
@@ -51,13 +72,38 @@ var gameBoard = d3.select(".container")
 var updateScore = function() {
   d3.select('.current')
     .text(gameStats.score.toString())
-  };
+};
 
 //Update best score
 var updateBestScore = function() {
   gameStats.bestScore = Math.max(gameStats.score, gameStats.bestScore);
   d3.select('.high').text(gameStats.bestScore.toString());
 };
+
+//Players TODO
+var Player = {
+  
+  //Circle
+  fill: '#ff6600',
+  x: 0,
+  y: 0,
+  angle: 0,
+  r: 5,
+
+};
+
+//Enemies
+var createEnemies = function() {
+
+  //Returns and array of enemy objects, with the properties "x" and "y"
+  var enemiesArray = range(0, gameOptions.nEnemies).map(function(i){
+    return {id: i, x: Math.random()*100, y: Math.random()*100}
+  })
+
+  return enemiesArray;
+};
+
+
 
 
 
