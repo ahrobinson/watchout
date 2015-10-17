@@ -90,9 +90,8 @@ var circle = gameBoard.append("circle")
                          .attr("cx", gameOptions.width/2)
                           .attr("cy", gameOptions.height/2)
                          .attr("r", 10);
-
+//implement drag function
 var drag = d3.behavior.drag()
-
 drag.on('drag', function() {
   d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y)
 })            
@@ -154,6 +153,8 @@ var moveEnemy = function() {
 
 setInterval(function() {moveEnemy()}, 1000);
 
+var newEnemies = createEnemies();
+render(newEnemies);
 //Need to implement score function
   //Need to increment the score over time 
   //Need to call scroe fucntion
@@ -181,9 +182,56 @@ setInterval(function() {
 //     // collision detected!
 //}
 
+// var playerPosX = d3.select('circle').attr('cx');
+// var playerPosY = d3.select('circle').attr('cy');
+
+// var enemyPosX = d3.selectAll('.asteroid').attr('x')
+// var enemyPosY = d3.selectAll('.asteroid').attr('y')
 
 
-var newEnemies = createEnemies();
-render(newEnemies);
+
+
+
+
+
+
+var collisionCheck = function(){
+  var playerPosX = d3.select('circle').attr('cx');
+  var playerPosY = d3.select('circle').attr('cy');
+  d3.selectAll('.asteroid').each(function(){
+    var enemyPosX = d3.select(this).attr('x');
+    var enemyPosY = d3.select(this).attr('y');
+    var dx = playerPosX - enemyPosX;
+    var dy = playerPosY - enemyPosY;
+    var distance = Math.sqrt(dx * dx + dy * dy)
+
+    if(distance < 22.5){
+      //collision detected assuming circle is radius 10 and asteroid is radius 12.5
+      updateBestScore();
+      gameStats.score = 0;
+      updateScore();
+    }
+  })
+}
+
+setInterval(collisionCheck, 10);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
