@@ -57,6 +57,8 @@ var gameStats = {
   bestScore: 0
 };
 
+
+
 //Set up the game board
 var axes = {
   x: d3.scale.linear().domain([0,100]).range([0,gameOptions.width]),
@@ -71,26 +73,33 @@ var gameBoard = d3.select('.container')
 //Update score function
 var updateScore = function() {
   d3.select('.current')
-    .text(gameStats.score.toString());
+    .text('Current score: ' 
+      + gameStats.score.toString());
 };
 
 //Update best score
 var updateBestScore = function() {
   gameStats.bestScore = Math.max(gameStats.score, gameStats.bestScore);
-  d3.select('.high').text(gameStats.bestScore.toString());
+  d3.select('.high').text('High score: ' + gameStats.bestScore.toString());
 };
 
-//Players TODO
-var Player = {
-  
-  //Circle
-  fill: '#ff6600',
-  x: 0,
-  y: 0,
-  angle: 0,
-  r: 5,
 
-};
+
+//Player
+var circle = gameBoard.append("circle")
+                         .attr("cx", gameOptions.width/2)
+                          .attr("cy", gameOptions.height/2)
+                         .attr("r", 10);
+
+var drag = d3.behavior.drag()
+
+drag.on('drag', function() {
+  d3.select(this).attr('cx', d3.event.x).attr('cy', d3.event.y)
+})            
+
+d3.select('circle').call(drag);
+
+
 
 //Enemies
 var createEnemies = function() {
@@ -102,6 +111,8 @@ var createEnemies = function() {
 
   return enemiesArray;
 };
+
+
 
 //Render the game board
 var render = function(enemy_data) {
@@ -120,7 +131,9 @@ var render = function(enemy_data) {
 
 };
 
-//Transition
+
+
+//Moving enemies
 //# transition.attrTween(name, tween)
 //https://github.com/mbostock/d3/wiki/Transitions#attrTween
 //Use setInterval
@@ -133,15 +146,40 @@ var render = function(enemy_data) {
 var moveEnemy = function() {
   
   d3.selectAll('.asteroid').each(function() {
-    d3.select(this).transition().attr('x', Math.random() * 700).attr('y', Math.random() * 450)
+    //had to use this to select individual asteroids!
+    d3.select(this).transition().delay(300).attr('x', Math.random() * 700).attr('y', Math.random() * 450)
   })
   
 }
 
 setInterval(function() {moveEnemy()}, 1000);
 
+//Need to implement score function
+  //Need to increment the score over time 
+  //Need to call scroe fucntion
+  //Collision detection
+    //store/reference the position of the player
+    //store/reference the position of the all enemies
+      //see if the above equal each other
 
 
+setInterval(function() {
+  gameStats.score++
+  updateScore()
+
+}, 1000);
+
+
+// var circle1 = {radius: 20, x: 5, y: 5};
+// var circle2 = {radius: 12, x: 10, y: 5};
+
+// var dx = circle1.x - circle2.x;
+// var dy = circle1.y - circle2.y;
+// var distance = Math.sqrt(dx * dx + dy * dy);
+
+// if (distance < circle1.radius + circle2.radius) {
+//     // collision detected!
+//}
 
 
 
